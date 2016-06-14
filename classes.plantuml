@@ -1,0 +1,352 @@
+@startuml
+top to bottom direction
+skinparam headerFontSize 30
+skinparam headerFontStyle bold
+skinparam classAttributeIconSize 0
+scale 1.0
+package default_pack {
+class Board {
+.. Fields  ..
++allEnemiesRemoved : boolean
+~board : GameObject[][]
++bombs : ArrayList
++enemies : ArrayList
++fires : ArrayList
+.. Methods ..
++addEnemy(Enemy) : void
++draw(Graphics) : void
++getBlockAt(int, int) : Block
++readLevel() : void
+-removeDiedEnemies() : void
+-removedDiedBombsAndFires() : void
++reset() : void
++setBlockBlockAt(int, int, Block) : void
++update() : void
+-updateBombs() : void
+-updateEnemies() : void
+-updateFires() : void
+.. Static ..
++ {static} BLOCKNUMBER : int
+}
+class Block <? extends GameObject>  {
+.. Methods ..
+-burnSolid() : void
++burnable() : boolean
++changeState(BlockState) : void
++changeStateTo(char) : void
++closeFireAt(int, int, int) : void
++draw(Graphics) : void
+-sendCloseFireDown(int) : void
+-sendCloseFireLeft(int) : void
+-sendCloseFireRight(int) : void
+-sendCloseFireUp(int) : void
+-sendFireDown(int) : void
+-sendFireLeft(int) : void
+-sendFireRight(int) : void
+-sendFireUp(int) : void
++solid() : boolean
++spreadFireAt(int, int, int) : void
+}
+class SoftBlock <? extends BlockState>  {
+.. Fields  ..
+~image : BufferedImage
+.. Methods ..
++burnable() : boolean
+~getImage() : BufferedImage
++solid() : boolean
+}
+class KeyboardHandler <<KeyListener>>  {
+.. Fields  ..
+~bomber : Bomber
+.. Methods ..
++keyPressed(KeyEvent) : void
++keyReleased(KeyEvent) : void
++keyTyped(KeyEvent) : void
+}
+class FireState <? extends BlockState>  {
+.. Fields  ..
+~image : BufferedImage
+.. Methods ..
++burnable() : boolean
+~getImage() : BufferedImage
++solid() : boolean
++toString() : String
+}
+class Bomb <? extends GameObject>  {
+.. Fields  ..
++board : Board
++counter : int
++range : int
++removed : boolean
+.. Methods ..
++burnable() : boolean
++changeState(BlockState) : void
+-colisionWithFire() : boolean
++draw(Graphics) : void
++solid() : boolean
++update() : void
+.. Static ..
++ {static} MAXTIME : int
+}
+class ResourceLoader {
+.. Fields  ..
+.. Methods ..
+.. Static ..
++ {static} PATH : String
++ {static} loadImage() : BufferedImage
+}
+class TextureAtlas {
+.. Fields  ..
+.. Methods ..
+.. Static ..
++ {static} cut() : BufferedImage
+~ {static} image : BufferedImage
+}
+class Enemy <? extends MovingObject>  {
+.. Fields  ..
+~count : int
+~freq : int
+~frequency : int
+~random : Random
+.. Methods ..
+-changeDirection() : void
+-moveForwad() : void
++moveOtherwise() : void
++update() : void
+.. Static ..
+~ {static} MAXSPEED : int
+}
+class AutomaticHandler <? extends MovingObject>  {
+.. Fields  ..
+~count : int
+~frequency : int
+.. Methods ..
++go() : void
++update() : void
+.. Static ..
+~ {static} BOMB : int
+~ {static} DOWN : int
+~ {static} LEFT : int
+~ {static} RIGHT : int
+~ {static} UP : int
+~ {static} bomber : Bomber
+~ {static} di : int
+~ {static} image : BufferedImage
+~ {static} random : Random
+}
+class Bomber <? extends MovingObject>  {
+.. Fields  ..
+~image : BufferedImage
+.. Methods ..
+-BlockAvailable() : boolean
+-colisionWithEnemy() : boolean
++getBoard() : Board
+~putBomb() : void
++reset() : void
++update() : void
+}
+class HardBlock <? extends BlockState>  {
+.. Fields  ..
+~image : BufferedImage
+.. Methods ..
++burnable() : boolean
+~getImage() : BufferedImage
++solid() : boolean
+}
+class MovingObject <? extends GameObject>  {
+.. Fields  ..
++board : Board
++dir : int
++isAlive : boolean
++speed : int
++xd : int
++yd : int
+.. Methods ..
++burnable() : boolean
+#canWalk() : boolean
++colisionWithFire() : boolean
++draw(Graphics) : void
++goDown() : void
++goLeft() : void
++goRight() : void
++goUp() : void
++move(int, int) : void
++moveOtherwise() : void
++solid() : boolean
++stopDown() : void
++stopLeft() : void
++stopRight() : void
++stopUp() : void
++toString() : String
+.. Static ..
+~ {static} DOWN : int
+~ {static} LEFT : int
+~ {static} RIGHT : int
+~ {static} SPEED : int
+~ {static} UP : int
+}
+class Fire <? extends GameObject>  {
+.. Fields  ..
++board : Board
++counter : int
+-d : int
+-downFireable : int
+~image : BufferedImage
+-l : int
+-leftFireable : int
+-r : int
++range : int
++removed : boolean
+-rightFireable : int
+-u : int
+-upFireable : int
+.. Methods ..
++burnable() : boolean
+-changeFiredTo(BlockState) : void
++changeState(BlockState) : void
++draw(Graphics) : void
++solid() : boolean
++update() : void
+.. Static ..
++ {static} MAXTIME_FIRE : int
+}
+abstract class GameObject  {
+.. Fields  ..
+~board : Board
+~image : BufferedImage
++isAlive : boolean
++removed : boolean
+~state : BlockState
+~x : int
+~y : int
+.. Methods ..
++ {abstract} burnable() : boolean
++changeState(BlockState) : void
++ {abstract} draw(Graphics) : void
++getState() : BlockState
++getX() : int
++getY() : int
++setX(int) : void
++setY(int) : void
++ {abstract} solid() : boolean
++update() : void
+.. Static ..
++ {static} SIZE : int
+}
+class BombBlock <? extends BlockState>  {
+.. Fields  ..
+~image : BufferedImage
+.. Methods ..
++burnable() : boolean
+~getImage() : BufferedImage
++solid() : boolean
+}
+class Menu {
+.. Fields  ..
+~choice_bot : boolean
+~choice_player : boolean
+~dim : Dimension
++keyboardHandler : KeyboardHandler
+.. Methods ..
++PanelVisible(boolean) : void
+-drawMenuScreen() : void
+-startComponents(int, boolean) : void
+.. Static ..
++ {static} FrameVisible() : void
+- {static} openingPictureLabel : JLabel
+- {static} openingPicturePanel_lvl_chioce : JPanel
+- {static} openningPicturePanel : JPanel
+~ {static} frame : JFrame
+}
+class BomberGame {
+.. Fields  ..
+~automaticHandler : AutomaticHandler
++board : Board
+~bomber : Bomber
+-choice : boolean
+-completed : boolean
+-gameTimer : Timer
+-image : BufferedImage
+-keyboardHandler : KeyboardHandler
+-levelLoader : LevelLoader
+-levelNo : int
+-running : boolean
+-ups : int
+.. Methods ..
++addEnemy(Enemy) : void
+-draw() : void
++getBlockAt(int, int) : Block
++nextLevelExist() : boolean
++paint(Graphics) : void
+-run() : void
++setBlockAt(int, int, Block) : void
++setCompleted(boolean) : void
++setRunning(boolean) : void
+~update() : void
+.. Static ..
++ {static} HEIGHT : int
++ {static} LASTLEVEL : int
++ {static} WIDTH : int
++ {static} main() : void
+~ {static} FREQ : int
+}
+class Utils {
+.. Methods ..
+.. Static ..
++ {static} resize() : BufferedImage
+}
+class EmptyBlock <? extends BlockState>  {
+.. Fields  ..
++image : BufferedImage
+.. Methods ..
++burnable() : boolean
+~getImage() : BufferedImage
++solid() : boolean
+}
+abstract class BlockState  {
+.. Methods ..
++ {abstract} burnable() : boolean
+~ {abstract} getImage() : BufferedImage
++ {abstract} solid() : boolean
++toString() : String
+}
+class LevelLoader {
+.. Fields  ..
+~game : BomberGame
+~image : BufferedImage
+-levelInStr : String
+.. Methods ..
++loadLevel(int) : void
++loadLevel() : void
++readLevel(int) : void
++start() : void
+}
+
+}
+Board *-- "0..*" Enemy
+GameObject <|-- Block
+BlockState <|-- SoftBlock
+KeyboardHandler o-- "1..1" Bomber
+BlockState <|-- FireState
+GameObject <|-- Bomb
+MovingObject <|-- Enemy
+MovingObject <|-- AutomaticHandler
+AutomaticHandler o-- "1..1" Bomber
+MovingObject <|-- Bomber
+BlockState <|-- HardBlock
+GameObject <|-- MovingObject
+MovingObject o-- "1..1" Board
+GameObject <|-- Fire
+GameObject o-- "1..1" BlockState
+BlockState <|-- BombBlock
+Menu o-- "1..1" KeyboardHandler
+BomberGame o-- "1..1" Bomber
+BomberGame o-- "1..1" Board
+BomberGame o-- "1..1" KeyboardHandler
+BomberGame o-- "1..1" AutomaticHandler
+BlockState <|-- EmptyBlock
+Board "1..1" *..o "0..*" GameObject
+Board "1..1" *..o "0..*" Bomb
+Board "1..1" *..o "0..*" Fire
+BomberGame "1..1" o..o "1..1" LevelLoader
+@enduml
